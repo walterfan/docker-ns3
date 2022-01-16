@@ -2,6 +2,11 @@ FROM ubuntu:20.04
 LABEL Author="Walter Fan <walter.fan@gmail.com>"
 LABEL Description="Docker image for NS-3 Network Simulator, changed from Ryan Kurte's image"
 
+RUN echo "deb mirror://mirrors.ubuntu.com/mirrors.txt focal main restricted universe multiverse" > /etc/apt/sources.list && \
+    echo "deb mirror://mirrors.ubuntu.com/mirrors.txt focal-updates main restricted universe multiverse" >> /etc/apt/sources.list && \
+    echo "deb mirror://mirrors.ubuntu.com/mirrors.txt focal-security main restricted universe multiverse" >> /etc/apt/sources.list
+
+
 RUN apt-get update
 
 # General dependencies
