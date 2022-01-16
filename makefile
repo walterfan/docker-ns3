@@ -1,5 +1,5 @@
 
-NAME=ryankurte/docker-ns3
+NAME=walterfan/docker-ns3
 
 build: Dockerfile
 	docker build -t $(NAME) .

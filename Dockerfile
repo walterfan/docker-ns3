@@ -1,6 +1,6 @@
-FROM ubuntu:latest
-MAINTAINER Ryan Kurte <ryankurte@gmail.com>
-LABEL Description="Docker image for NS-3 Network Simulator"
+FROM ubuntu:20.04
+LABEL Author="Walter Fan <walter.fan@gmail.com>"
+LABEL Description="Docker image for NS-3 Network Simulator, changed from Ryan Kurte's image"
 
 RUN apt-get update
 
@@ -18,7 +18,7 @@ RUN apt-get install -y \
   clang \
   valgrind \
   gsl-bin \
-  libgsl2 \
+  libgsl23 \
   libgsl-dev \
   flex \
   bison \
@@ -49,21 +49,29 @@ RUN apt-get install -y \
 # NS-3
 
 # Create working directory
-RUN mkdir -p /usr/ns3
-WORKDIR /usr
+RUN mkdir -p /opt/ns3
+WORKDIR /opt
 
 # Fetch NS-3 source
-RUN wget http://www.nsnam.org/release/ns-allinone-3.26.tar.bz2
-RUN tar -xf ns-allinone-3.26.tar.bz2
+RUN wget https://www.nsnam.org/releases/ns-allinone-3.35.tar.bz2 --no-check-certificate
+RUN tar -xf ns-allinone-3.35.tar.bz2
 
 # Configure and compile NS-3
-RUN cd ns-allinone-3.26 && ./build.py --enable-examples --enable-tests
+RUN cd ns-allinone-3.35 && ./build.py --enable-examples --enable-tests
 
-RUN ln -s /usr/ns-allinone-3.26/ns-3.26/ /usr/ns3/
+RUN ln -s /opt/ns-allinone-3.35/ns-3.35/ /opt/ns3/
+
+# Fetch libevent
+
+RUN wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+RUN tar xvfz libevent-2.1.12-stable.tar.gz
+RUN cd libevent-2.1.12-stable && ./configure && make && make install
 
 # Cleanup
 RUN apt-get clean && \
   rm -rf /var/lib/apt && \
-  rm /usr/ns-allinone-3.26.tar.bz2
+  rm /opt/ns-allinone-3.35.tar.bz2 && \
+  rm /opt/libevent-2.1.12-stable.tar.gz
+
 
 
